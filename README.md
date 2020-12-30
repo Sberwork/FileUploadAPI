@@ -58,15 +58,15 @@ The material consists of one or more versions.
 Each material must have a category that is specified by the user when creating it. 
 Possible categories•
 * Presentation
-•Application
-•ElseThe material version is a file.
+* Application
+* ElseThe material version is a file.
 
 Once uploaded, it is not changeable. 
 When loading a version, it is assigned an ordinal number, starting with one. Some metadata must be recorded for each version:
 
-•When the version was uploaded (date and time)
+* When the version was uploaded (date and time)
 
-•Size of the uploaded file
+* Size of the uploaded file
 
 You need to design and implement the following cases:Uploading a file to the server as a new material.
 Uploading a file to the server as a new version of existing content.
