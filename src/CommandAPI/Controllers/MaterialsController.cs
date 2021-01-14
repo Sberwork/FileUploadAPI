@@ -12,6 +12,7 @@ using CommandAPI.Infrastructure;
 using CommandDAL.Data;
 using CommandBLL.Models;
 using CommandDAL.Models;
+using CommandDAL.Models.Enums;
 using Microsoft.Extensions.Configuration;
 using CommandBLL.Services;
 
@@ -25,15 +26,13 @@ namespace CommandAPI.Controllers
     public class MaterialsController : ControllerBase
     {
         private readonly IMaterialService _materialService;
-        // private readonly NewMaterialDto _newMaterialDto;
 
         private readonly long _fileSizeLimit;
-
-        private List<string> Categories = new List<string> { "Presentation", "Application", "Other" };
+  
         public MaterialsController(IMaterialService materialService, IConfiguration config)
         {
             _materialService = materialService;
-            // _newMaterialDto = newMaterialDto;
+
             _fileSizeLimit = config.GetValue<long>("FileSizeLimit");
         }
 
@@ -42,7 +41,7 @@ namespace CommandAPI.Controllers
         {
             if (category == null)
                 return Ok(_materialService.GetAllMaterials());
-            if (Categories.Contains(category))
+            if (Enum.IsDefined(typeof(MaterialCategories), category))
             {
                 var materials = _materialService.GetFilteredMaterials(category);
                 if (materials != null)
@@ -88,7 +87,7 @@ namespace CommandAPI.Controllers
         [Authorize(Roles = "initiator, admin")]
         public ActionResult<Material> ChangeMaterialCategory(string name, string category)
         {
-            if (Categories.Contains(category))
+            if (Enum.IsDefined(typeof(MaterialCategories),category))
             {
                 var material = _materialService.ChangeMaterialCategory(name, category);
                 if (material != null)
@@ -108,7 +107,7 @@ namespace CommandAPI.Controllers
         {
 
             if (material.Name != null && material.Category != null && material.File != null
-                && material.File.Length < _fileSizeLimit && Categories.Contains(material.Category))
+                && material.File.Length < _fileSizeLimit && Enum.IsDefined(typeof(MaterialCategories), material.Category))
             {
                 Material newMaterial = new Material
                 {
