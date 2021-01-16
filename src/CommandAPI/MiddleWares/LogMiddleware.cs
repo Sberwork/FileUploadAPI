@@ -57,19 +57,13 @@ namespace CommandAPI.MiddleWares
 
                 await responseBodyStream.CopyToAsync(originalBodyStream);
             }
-            // try
-            // {
-            //     await _next(context);
-            // }
-            // finally
-            // {
-            //     _logger.LogInformation(
-            //         "Request {header.Value} {method} {url} => {statusCode}",
-            //         context.Request?.Headers,
-            //         context.Request?.Method,
-            //         context.Request?.Path.Value,
-            //         context.Response?.StatusCode);
-            // }
+            _logger.LogInformation(
+                "Request {header.Value} {method} {url} => {statusCode}",
+                context.Request?.Headers,
+                context.Request?.Method,
+                context.Request?.Path.Value,
+                context.Response?.StatusCode);
+
         }
     }
 }

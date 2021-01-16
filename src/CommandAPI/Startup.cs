@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CommandDAL.Data;
@@ -15,16 +12,11 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using AutoMapper;
 using Newtonsoft.Json.Serialization;
-using CommandAPI;
-using Microsoft.Extensions.Logging;
 using CommandDAL.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Reflection;
-using System.IO;
 using Microsoft.OpenApi.Models;
 using Hangfire;
 using Hangfire.PostgreSql;
-using CommandAPI.Infrastructure;
 using CommandAPI.MiddleWares;
 using Microsoft.AspNetCore.Http.Features;
 using Newtonsoft.Json;
@@ -39,9 +31,6 @@ namespace CommandAPI
         {
             Configuration = configuration;
         }
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-
         public void ConfigureServices(IServiceCollection services)
         {
             var builder = new NpgsqlConnectionStringBuilder();
@@ -66,14 +55,14 @@ namespace CommandAPI
                 s.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
-            // services.ConfigureApplicationCookie(options =>
-            // {
-            //     options.Events.OnRedirectToLogin = context =>
-            //     {
-            //         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            //         return Task.CompletedTask;
-            //     };
-            // });
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+            });
 
             services.AddHangfire(x => x.UsePostgreSqlStorage(builder.ConnectionString));
             services.AddHangfireServer();
@@ -84,6 +73,9 @@ namespace CommandAPI
             services.AddScoped<ICommandAPIRepo, SqlCommandAPIRepo>();
 
             services.AddTransient<IMaterialService, MaterialService>();
+
+            services.AddSingleton<ILogStorage, FileLogStorage>();
+
             services.Configure<IISServerOptions>(options =>
             {
                 options.MaxRequestBodySize = int.MaxValue;
@@ -120,21 +112,15 @@ namespace CommandAPI
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+          public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            // app.UseMiddleware<RequestResponseLoggingMiddleware>();
+            app.UseMiddleware<LogMiddleware>();
 
-            // app.UseMiddleware<LogMiddleware>();
-
-            // 1st v1
-            // app.UseOpenApi();
-            // app.UseSwaggerUi3();
-
-            // v2
             app.UseSwagger();
 
             app.UseSwaggerUI(x =>
@@ -149,6 +135,7 @@ namespace CommandAPI
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

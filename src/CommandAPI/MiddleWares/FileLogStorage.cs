@@ -1,14 +1,13 @@
 using System;
+using Microsoft.Extensions.Configuration;
+
 namespace CommandAPI.MiddleWares
 {
     public class FileLogStorage : ILogStorage
     {
-        private readonly string _path;
-        public FileLogStorage(string path = @"Middlewares\Updownloads\log.txt")
-        {
-            _path = path;
-        }
 
+       string path = @"Middlewares\Updownloads\log.txt";
+  
         public void Store(LogModel log)
         {
             string[] lines =
@@ -24,7 +23,7 @@ namespace CommandAPI.MiddleWares
                 Environment.NewLine
             };
 
-            System.IO.File.AppendAllLines(_path, lines);
+            System.IO.File.AppendAllLines(path, lines);
         }
     }
 

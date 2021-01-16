@@ -1,3 +1,4 @@
+
 namespace CommandAPI.MiddleWares
 {
     public interface ILogStorage

@@ -25,11 +25,11 @@ namespace CommandBLL.Services
             _config = config;
             _backgroundJob = backgroundJob;
         }
-        public MaterialService(ApplicationContext context, IConfiguration config)
-        {
-            _context = context;
-            _config = config;
-        }
+        // public MaterialService(ApplicationContext context, IConfiguration config)
+        // {
+        //     _context = context;
+        //     _config = config;
+        // }
 
         public IList<Material> GetAllMaterials()
         {
