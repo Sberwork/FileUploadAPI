@@ -49,7 +49,7 @@ namespace CommandAPI
             builder.Username = Configuration["UserID"];
             builder.Password = Configuration["Password"];
 
-            services.AddDbContext<ApplicationContext>(opt => opt.UseNpgsql(builder.ConnectionString, b => b.MigrationsAssembly("CommandAPI")));
+            services.AddDbContext<ApplicationContext>(opt => opt.UseNpgsql(builder.ConnectionString, b => b.MigrationsAssembly("CommandDAL")));
 
             services.AddIdentity<User, IdentityRole>(options =>
                        {

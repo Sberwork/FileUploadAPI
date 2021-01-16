@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using CommandDAL.Data;
 using CommandDAL.Models;
 using AutoMapper;
-using CommandAPI.Dtos;
+using CommandBLL.Models;
 using Microsoft.AspNetCore.JsonPatch;
 
 namespace CommandAPI.Controllers

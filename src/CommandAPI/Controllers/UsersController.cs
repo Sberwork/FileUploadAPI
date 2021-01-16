@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using CommandDAL.Models;
-using CommandAPI.Dtos;
+using CommandBLL.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CommandAPI.Controllers

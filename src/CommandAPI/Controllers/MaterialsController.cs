@@ -7,14 +7,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using CommandAPI;
-using CommandAPI.Dtos;
 using CommandAPI.Infrastructure;
 using CommandDAL.Data;
 using CommandBLL.Models;
 using CommandDAL.Models;
-using CommandDAL.Models.Enums;
 using Microsoft.Extensions.Configuration;
 using CommandBLL.Services;
+using CommandDAL.Models.Enums;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,13 +25,19 @@ namespace CommandAPI.Controllers
     public class MaterialsController : ControllerBase
     {
         private readonly IMaterialService _materialService;
+        // private readonly NewMaterialDto _newMaterialDto;
 
         private readonly long _fileSizeLimit;
-  
+
+        // private List<string> Categories = new List<string> { "Presentation", "Application", "Other" };
+
+        
+
+        // MaterialCategories Categories;
         public MaterialsController(IMaterialService materialService, IConfiguration config)
         {
             _materialService = materialService;
-
+            // _newMaterialDto = newMaterialDto;
             _fileSizeLimit = config.GetValue<long>("FileSizeLimit");
         }
 
@@ -60,7 +65,7 @@ namespace CommandAPI.Controllers
             return BadRequest();
         }
 
-        // GET: api/Material/{name}
+        // GET: api/Materials/{name}
         [HttpGet]
         [Route("name")]
         public IActionResult GetMaterialByName(string name)
@@ -71,6 +76,7 @@ namespace CommandAPI.Controllers
             return BadRequest();
         }
 
+        // GET: api/Materials/download
         [HttpGet]
         [Route("download")]
         public IActionResult DownloadFile(string name, int? version)
@@ -87,7 +93,7 @@ namespace CommandAPI.Controllers
         [Authorize(Roles = "initiator, admin")]
         public ActionResult<Material> ChangeMaterialCategory(string name, string category)
         {
-            if (Enum.IsDefined(typeof(MaterialCategories),category))
+            if (Enum.IsDefined(typeof(MaterialCategories), category))
             {
                 var material = _materialService.ChangeMaterialCategory(name, category);
                 if (material != null)
@@ -107,7 +113,7 @@ namespace CommandAPI.Controllers
         {
 
             if (material.Name != null && material.Category != null && material.File != null
-                && material.File.Length < _fileSizeLimit && Enum.IsDefined(typeof(MaterialCategories), material.Category))
+                && material.File.Length < _fileSizeLimit && (Enum.IsDefined(typeof(MaterialCategories), material.Category)))
             {
                 Material newMaterial = new Material
                 {
